@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <h2>Your Style Profile</h2>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Personal Information</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Name:</strong> {{ user.get_full_name }}</p>
+            <p><strong>Email:</strong> {{ user.email }}</p>
+            <p><strong>Phone:</strong> {{ user.phone }}</p>
+            <p><strong>Shipping Address:</strong> {{ user.shipping_address }}</p>
+        </div>
+    </div>
+    
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Style Preferences</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Preferred Styles:</strong> {{ user.style_preferences.preferred_style|join:", " }}</p>
+            <p><strong>Color Preference:</strong> {{ user.style_preferences.color_preference }}</p>
+            <p><strong>Budget Range:</strong> {{ user.style_preferences.budget_range }}</p>
+        </div>
+    </div>
+    
+    {% if measurements %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h4>Your Measurements</h4>
+        </div>
+        <div class="card-body">
+            <p><strong>Chest:</strong> {{ measurements.measurements.chest }} cm</p>
+            <p><strong>Waist:</strong> {{ measurements.measurements.waist }} cm</p>
+            <p><strong>Hips:</strong> {{ measurements.measurements.hips }} cm</p>
+            <p><strong>Shoulder:</strong> {{ measurements.measurements.shoulder }} cm</p>
+            <p><strong>Inseam:</strong> {{ measurements.measurements.inseam }} cm</p>
+            {% if measurements.notes %}
+            <p><strong>Notes:</strong> {{ measurements.notes }}</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <a href="{% url 'profile_setup' %}" class="btn btn-primary">Edit Profile</a>
+</div>
+{% endblock %} 

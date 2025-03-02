@@ -1,0 +1,71 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Clothing Management{% endblock %}
+
+{% block page_title %}Clothing Management{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Clothing Items</h5>
+            <a href="{% url 'admin:sub_app_clothingitem_add' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i> Add Clothing Item
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Name</th>
+                        <th>Category</th>
+                        <th>Brand</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in clothing_items %}
+                    <tr>
+                        <td>
+                            {% if item.image %}
+                            <img src="{{ item.image.url }}" alt="{{ item.name }}" style="max-height: 50px;">
+                            {% else %}
+                            <span class="text-muted">No image</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ item.name }}</td>
+                        <td>{{ item.get_category_display }}</td>
+                        <td>{{ item.brand }}</td>
+                        <td>₹{{ item.price }}</td>
+                        <td>{{ item.stock }}</td>
+                        <td>
+                            {% if item.stock > 10 %}
+                            <span class="badge bg-success">In Stock</span>
+                            {% elif item.stock > 0 %}
+                            <span class="badge bg-warning">Low Stock</span>
+                            {% else %}
+                            <span class="badge bg-danger">Out of Stock</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{% url 'admin:sub_app_clothingitem_change' item.id %}" class="btn btn-sm btn-info me-1">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{% url 'admin:sub_app_clothingitem_delete' item.id %}" class="btn btn-sm btn-danger">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

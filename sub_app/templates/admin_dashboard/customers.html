@@ -1,0 +1,86 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Customers Management{% endblock %}
+
+{% block page_title %}Customers Management{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Customer List</h5>
+            <a href="{% url 'add_customer' %}" class="btn btn-primary btn-sm">
+                <i class="fas fa-plus me-1"></i> Add Customer
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Measurements</th>
+                        <th>Style Quiz</th>
+                        <th>Joined Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for customer in customers %}
+                    <tr>
+                        <td>{{ customer.get_full_name|default:customer.username }}</td>
+                        <td>{{ customer.email }}</td>
+                        <td>{{ customer.phone }}</td>
+                        <td>{{ customer.measurement_count }}</td>
+                        <td>
+                            {% if customer.style_quiz_completed %}
+                            <span class="badge bg-success">Completed</span>
+                            {% else %}
+                            <span class="badge bg-warning">Pending</span>
+                            {% endif %}
+                        </td>
+                        <td>{{ customer.date_joined|date:"M d, Y" }}</td>
+                        <td>
+                            <div class="btn-group">
+                                <a href="{% url 'add_measurement' %}?customer={{ customer.id }}" class="btn btn-sm btn-success me-1" title="Add Measurements">
+                                    <i class="fas fa-ruler"></i>
+                                </a>
+                                <a href="{% url 'add_customer' %}?edit={{ customer.id }}" class="btn btn-sm btn-info me-1" title="Edit Customer">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-sm btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal{{ customer.id }}" title="Delete Customer">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+
+                            <!-- Delete Confirmation Modal -->
+                            <div class="modal fade" id="deleteModal{{ customer.id }}" tabindex="-1" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h5 class="modal-title">Confirm Delete</h5>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are you sure you want to delete customer "{{ customer.get_full_name|default:customer.username }}"?
+                                            This action cannot be undone.
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                            <a href="{% url 'admin:sub_app_user_delete' customer.id %}" class="btn btn-danger">Delete</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+{% endblock %} 

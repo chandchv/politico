@@ -1,0 +1,153 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Add Customer{% endblock %}
+
+{% block page_title %}Add New Customer{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="mb-0">Add New Customer</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" id="customerForm">
+            {% csrf_token %}
+            
+            <!-- Account Information -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="border-bottom pb-2">Account Information</h6>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="username" class="form-label">Username*</label>
+                    <input type="text" class="form-control" id="username" name="username" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="email" class="form-label">Email*</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="password1" class="form-label">Password*</label>
+                    <input type="password" class="form-control" id="password1" name="password1" required>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="password2" class="form-label">Confirm Password*</label>
+                    <input type="password" class="form-control" id="password2" name="password2" required>
+                </div>
+            </div>
+
+            <!-- Personal Information -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="border-bottom pb-2">Personal Information</h6>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="first_name" class="form-label">First Name</label>
+                    <input type="text" class="form-control" id="first_name" name="first_name">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="last_name" class="form-label">Last Name</label>
+                    <input type="text" class="form-control" id="last_name" name="last_name">
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label for="phone" class="form-label">Phone Number*</label>
+                    <input type="tel" class="form-control" id="phone" name="phone" required>
+                </div>
+            </div>
+
+            <!-- Address Information -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="border-bottom pb-2">Address Information</h6>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="shipping_address" class="form-label">Shipping Address*</label>
+                    <textarea class="form-control" id="shipping_address" name="shipping_address" rows="3" required></textarea>
+                </div>
+                <div class="col-12 mb-3">
+                    <label for="billing_address" class="form-label">Billing Address</label>
+                    <textarea class="form-control" id="billing_address" name="billing_address" rows="3"></textarea>
+                    <div class="form-check mt-2">
+                        <input class="form-check-input" type="checkbox" id="same_as_shipping" name="same_as_shipping">
+                        <label class="form-check-label" for="same_as_shipping">
+                            Same as shipping address
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Preferences -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h6 class="border-bottom pb-2">Preferences</h6>
+                </div>
+                <div class="col-md-12 mb-3">
+                    <label for="preferences" class="form-label">Style Preferences</label>
+                    <textarea class="form-control" id="preferences" name="preferences" rows="2"></textarea>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="email_notifications" name="email_notifications" checked>
+                        <label class="form-check-label" for="email_notifications">
+                            Email Notifications
+                        </label>
+                    </div>
+                </div>
+                <div class="col-md-6 mb-3">
+                    <div class="form-check">
+                        <input class="form-check-input" type="checkbox" id="sms_notifications" name="sms_notifications" checked>
+                        <label class="form-check-label" for="sms_notifications">
+                            SMS Notifications
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="text-end">
+                <button type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Create Customer</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('same_as_shipping').addEventListener('change', function() {
+    const billingAddress = document.getElementById('billing_address');
+    if (this.checked) {
+        billingAddress.value = document.getElementById('shipping_address').value;
+        billingAddress.disabled = true;
+    } else {
+        billingAddress.disabled = false;
+    }
+});
+
+document.getElementById('shipping_address').addEventListener('input', function() {
+    const sameAsShipping = document.getElementById('same_as_shipping');
+    const billingAddress = document.getElementById('billing_address');
+    if (sameAsShipping.checked) {
+        billingAddress.value = this.value;
+    }
+});
+
+// Form validation
+document.getElementById('customerForm').addEventListener('submit', function(e) {
+    const password1 = document.getElementById('password1').value;
+    const password2 = document.getElementById('password2').value;
+    
+    if (password1 !== password2) {
+        e.preventDefault();
+        alert('Passwords do not match!');
+        return false;
+    }
+    
+    if (password1.length < 8) {
+        e.preventDefault();
+        alert('Password must be at least 8 characters long!');
+        return false;
+    }
+});
+</script>
+{% endblock %} 

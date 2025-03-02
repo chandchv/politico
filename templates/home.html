@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}Welcome{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center text-center py-5">
+        <div class="col-md-8">
+            <h1 class="display-4 mb-4">Welcome to Fashion Subscription</h1>
+            <p class="lead mb-4">Your personal styling journey begins here. Get curated fashion delivered to your doorstep.</p>
+            
+            <div class="row mb-5">
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3>₹3L Plan</h3>
+                            <p>Perfect for starting your style journey</p>
+                            <a href="{% url 'profile_setup' %}" class="btn btn-outline-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3>₹5L Plan</h3>
+                            <p>Enhanced styling with premium selections</p>
+                            <a href="{% url 'profile_setup' %}" class="btn btn-outline-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card h-100">
+                        <div class="card-body">
+                            <h3>₹7L Plan</h3>
+                            <p>Luxury fashion with personal stylist</p>
+                            <a href="{% url 'profile_setup' %}" class="btn btn-outline-primary">Get Started</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            {% if not user.is_authenticated %}
+            <div class="mt-4">
+                <a href="{% url 'login' %}" class="btn btn-primary btn-lg mx-2">Login</a>
+                <a href="{% url 'register' %}" class="btn btn-outline-primary btn-lg mx-2">Register</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="row py-5">
+        <div class="col-md-4">
+            <h3>Personal Stylist</h3>
+            <p>Get matched with a professional stylist who understands your style preferences.</p>
+        </div>
+        <div class="col-md-4">
+            <h3>Curated Selection</h3>
+            <p>Receive handpicked clothing items that match your style profile and measurements.</p>
+        </div>
+        <div class="col-md-4">
+            <h3>Flexible Plans</h3>
+            <p>Choose from our range of subscription plans to match your fashion needs and budget.</p>
+        </div>
+    </div>
+</div>
+{% endblock %} 
