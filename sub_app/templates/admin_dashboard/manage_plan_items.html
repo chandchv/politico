@@ -1,0 +1,111 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Manage {{ plan.name }} Items{% endblock %}
+
+{% block page_title %}Manage {{ plan.name }} Items{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">Add New Item</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" class="row g-3">
+            {% csrf_token %}
+            <input type="hidden" name="action" value="add">
+            
+            <div class="col-md-3">
+                <label for="category" class="form-label">Category*</label>
+                <select class="form-select" id="category" name="category" required>
+                    <option value="">Choose category...</option>
+                    {% for category in categories %}
+                    <option value="{{ category.id }}">{{ category.name }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            
+            <div class="col-md-4">
+                <label for="name" class="form-label">Item Name*</label>
+                <input type="text" class="form-control" id="name" name="name" required>
+            </div>
+            
+            <div class="col-md-2">
+                <label for="quantity" class="form-label">Quantity*</label>
+                <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
+            </div>
+            
+            <div class="col-md-3">
+                <label for="description" class="form-label">Description</label>
+                <input type="text" class="form-control" id="description" name="description">
+            </div>
+            
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Add Item</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% for category, items in items_by_category.items %}
+<div class="card dashboard-card mb-4">
+    <div class="card-header">
+        <h5 class="mb-0">{{ category.name }}</h5>
+    </div>
+    <div class="card-body">
+        {% if items %}
+        <div class="table-responsive">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Item Name</th>
+                        <th>Quantity</th>
+                        <th>Description</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in items %}
+                    <tr>
+                        <td>{{ item.name }}</td>
+                        <td>
+                            <form method="post" class="d-inline">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="update">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <div class="input-group" style="width: 150px;">
+                                    <input type="number" class="form-control form-control-sm" 
+                                           name="quantity" value="{{ item.quantity }}" min="1">
+                                    <button type="submit" class="btn btn-outline-primary btn-sm">
+                                        <i class="fas fa-save"></i>
+                                    </button>
+                                </div>
+                            </form>
+                        </td>
+                        <td>{{ item.description }}</td>
+                        <td>
+                            <form method="post" class="d-inline" 
+                                  onsubmit="return confirm('Are you sure you want to remove this item?');">
+                                {% csrf_token %}
+                                <input type="hidden" name="action" value="delete">
+                                <input type="hidden" name="item_id" value="{{ item.id }}">
+                                <button type="submit" class="btn btn-danger btn-sm">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        {% else %}
+        <p class="text-muted mb-0">No items in this category</p>
+        {% endif %}
+    </div>
+</div>
+{% endfor %}
+
+<div class="text-end mt-4">
+    <a href="{% url 'subscription_plans' %}" class="btn btn-secondary">Back to Plans</a>
+</div>
+{% endblock %} 

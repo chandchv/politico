@@ -1,4 +1,6 @@
 {% extends "admin_dashboard/base.html" %}
+{% load static %}
+{% load custom_filters %}
 
 {% block title %}Add Measurements{% endblock %}
 
@@ -45,15 +47,12 @@
                         <input type="number" class="form-control" name="shoulder" step="0.1">
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Sleeve Length (cm)</label>
-                        <input type="number" class="form-control" name="sleeve_length" step="0.1">
+                        <label class="form-label">Full Sleeve Length (cm)</label>
+                        <input type="number" class="form-control" name="full_sleeve_length" step="0.1">
                     </div>
                     <div class="col-md-3 mb-3">
-                        <label class="form-label">Sleeve Type</label>
-                        <select class="form-select" name="sleeve_type">
-                            <option value="full">Full Sleeve</option>
-                            <option value="half">Half Sleeve</option>
-                        </select>
+                        <label class="form-label">Half Sleeve Length (cm)</label>
+                        <input type="number" class="form-control" name="half_sleeve_length" step="0.1">
                     </div>
                     <div class="col-md-3 mb-3">
                         <label class="form-label">Chest (cm)</label>
@@ -91,19 +90,19 @@
                 <div class="row mb-3">
                     <div class="col-md-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fit_type" value="stretched" id="stretched">
+                            <input class="form-check-input" type="radio" name="fit_type" value="stretched" id="stretched">
                             <label class="form-check-label" for="stretched">Stretched</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fit_type" value="regular" id="regular">
+                            <input class="form-check-input" type="radio" name="fit_type" value="regular" id="regular">
                             <label class="form-check-label" for="regular">Regular</label>
                         </div>
                     </div>
                     <div class="col-md-4">
                         <div class="form-check">
-                            <input class="form-check-input" type="checkbox" name="fit_type" value="comfort" id="comfort">
+                            <input class="form-check-input" type="radio" name="fit_type" value="comfort" id="comfort">
                             <label class="form-check-label" for="comfort">Comfort</label>
                         </div>
                     </div>
@@ -162,31 +161,75 @@
 
 {% block extra_js %}
 <script>
+let customerMeasurements = {};
+
+document.getElementById('customer').addEventListener('change', function() {
+    const customerId = this.value;
+    if (!customerId) {
+        customerMeasurements = {};
+        return;
+    }
+
+    // Fetch customer measurements
+    fetch(`/custom-admin/measurements/customer/${customerId}/`)
+        .then(response => response.json())
+        .then(data => {
+            customerMeasurements = data;
+            const clothingType = document.getElementById('clothing_type').value;
+            if (clothingType) {
+                loadMeasurements(clothingType);
+            }
+        })
+        .catch(error => console.error('Error:', error));
+});
+
 document.getElementById('clothing_type').addEventListener('change', function() {
     // Hide all measurement fields
     document.querySelectorAll('.measurement-fields').forEach(function(el) {
         el.style.display = 'none';
     });
     
-    // Show selected measurement fields
-    if (this.value === 'shirt') {
-        document.getElementById('shirtMeasurements').style.display = 'block';
-    } else if (this.value === 'pants') {
-        document.getElementById('pantsMeasurements').style.display = 'block';
+    // Show selected measurement fields and load measurements if available
+    if (this.value) {
+        const measurementDiv = document.getElementById(this.value + 'Measurements');
+        if (measurementDiv) {
+            measurementDiv.style.display = 'block';
+            loadMeasurements(this.value);
+        }
     }
 });
 
-// Ensure only one fit type is selected at a time
-document.querySelectorAll('input[name="fit_type"]').forEach(function(checkbox) {
-    checkbox.addEventListener('change', function() {
-        if (this.checked) {
-            document.querySelectorAll('input[name="fit_type"]').forEach(function(cb) {
-                if (cb !== this) {
-                    cb.checked = false;
-                }
-            }, this);
-        }
+function loadMeasurements(clothingType) {
+    const measurements = customerMeasurements[clothingType];
+    if (!measurements) return;
+
+    // Clear all inputs first
+    document.querySelectorAll('.measurement-fields input[type="number"]').forEach(input => {
+        input.value = '';
     });
-});
+    document.querySelectorAll('.measurement-fields input[type="radio"]').forEach(input => {
+        input.checked = false;
+    });
+    document.getElementById('notes').value = '';
+
+    // Load measurements
+    if (measurements.measurements) {
+        Object.entries(measurements.measurements).forEach(([field, value]) => {
+            const input = document.querySelector(`[name="${field}"]`);
+            if (input) {
+                if (input.type === 'radio') {
+                    document.querySelector(`[name="${field}"][value="${value}"]`).checked = true;
+                } else {
+                    input.value = value;
+                }
+            }
+        });
+    }
+
+    // Load notes
+    if (measurements.notes) {
+        document.getElementById('notes').value = measurements.notes;
+    }
+}
 </script>
 {% endblock %} 

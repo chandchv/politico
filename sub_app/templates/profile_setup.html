@@ -1,0 +1,101 @@
+{% extends 'base.html' %}
+
+{% block title %}Setup Profile{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <h2 class="text-center mb-4">Complete Your Style Profile</h2>
+        
+        <form method="post" class="needs-validation" novalidate>
+            {% csrf_token %}
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Style Preferences</h4>
+                </div>
+                <div class="card-body">
+                    <div class="mb-3">
+                        <label class="form-label">Preferred Styles</label>
+                        <div class="row">
+                            {% for value, label in preferences_form.preferred_style.field.choices %}
+                            <div class="col-md-4 mb-2">
+                                <div class="form-check">
+                                    <input type="checkbox" name="preferred_style" value="{{ value }}" 
+                                           class="form-check-input" id="style_{{ value }}">
+                                    <label class="form-check-label" for="style_{{ value }}">{{ label }}</label>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Color Preference</label>
+                        {% for value, label in preferences_form.color_preference.field.choices %}
+                        <div class="form-check">
+                            <input type="radio" name="color_preference" value="{{ value }}" 
+                                   class="form-check-input" id="color_{{ value }}">
+                            <label class="form-check-label" for="color_{{ value }}">{{ label }}</label>
+                        </div>
+                        {% endfor %}
+                    </div>
+                    
+                    {{ preferences_form.phone.as_p }}
+                    {{ preferences_form.shipping_address.as_p }}
+                    {{ preferences_form.billing_address.as_p }}
+                </div>
+            </div>
+            
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h4 class="mb-0">Your Measurements</h4>
+                </div>
+                <div class="card-body">
+                    <div class="row">
+                        {% for field in measurements_form %}
+                        {% if field.name != 'notes' %}
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">{{ field.label }}</label>
+                            <div class="input-group measurement-input">
+                                {{ field }}
+                                <span class="input-group-text">cm</span>
+                            </div>
+                        </div>
+                        {% endif %}
+                        {% endfor %}
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Additional Notes</label>
+                        {{ measurements_form.notes }}
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button type="submit" class="btn btn-primary btn-lg px-5">Save Profile</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{% block extra_js %}
+<script>
+// Form validation
+(function () {
+    'use strict'
+    var forms = document.querySelectorAll('.needs-validation')
+    Array.prototype.slice.call(forms).forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+                event.preventDefault()
+                event.stopPropagation()
+            }
+            form.classList.add('was-validated')
+        }, false)
+    })
+})()
+</script>
+{% endblock %}
+{% endblock %} 

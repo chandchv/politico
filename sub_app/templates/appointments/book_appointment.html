@@ -1,0 +1,99 @@
+{% extends "admin_dashboard/base.html" %}
+{% load static %}
+
+{% block title %}Book Appointment{% endblock %}
+
+{% block page_title %}Book New Appointment{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h5 class="mb-0">Schedule Appointment</h5>
+    </div>
+    <div class="card-body">
+        <form method="post" id="appointmentForm">
+            {% csrf_token %}
+            
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="customer" class="form-label">Select Customer</label>
+                    <select class="form-select" name="customer" id="customer" required>
+                        <option value="">Choose customer...</option>
+                        {% for customer in customers %}
+                        <option value="{{ customer.id }}">{{ customer.get_full_name|default:customer.username }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div class="col-md-6">
+                    <label for="stage" class="form-label">Appointment Stage</label>
+                    <select class="form-select" name="stage" id="stage" required>
+                        <option value="">Select stage...</option>
+                        {% for stage_value, stage_label in stages %}
+                        <option value="{{ stage_value }}">{{ stage_label }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label for="date" class="form-label">Date</label>
+                    <input type="date" class="form-control" name="date" id="date" required 
+                           min="{{ min_date|date:'Y-m-d' }}" max="{{ max_date|date:'Y-m-d' }}">
+                </div>
+                <div class="col-md-6">
+                    <label for="time" class="form-label">Time Slot</label>
+                    <select class="form-select" name="time" id="time" required disabled>
+                        <option value="">Select date first...</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label for="notes" class="form-label">Notes</label>
+                <textarea class="form-control" id="notes" name="notes" rows="3"></textarea>
+            </div>
+
+            <div class="text-end">
+                <button type="button" class="btn btn-secondary me-2" onclick="window.history.back()">Cancel</button>
+                <button type="submit" class="btn btn-primary">Schedule Appointment</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.getElementById('date').addEventListener('change', function() {
+    const dateInput = this;
+    const timeSelect = document.getElementById('time');
+    
+    if (!dateInput.value) {
+        timeSelect.disabled = true;
+        timeSelect.innerHTML = '<option value="">Select date first...</option>';
+        return;
+    }
+
+    // Fetch available time slots
+    fetch(`/appointments/available-slots/?date=${dateInput.value}`)
+        .then(response => response.json())
+        .then(data => {
+            timeSelect.disabled = false;
+            timeSelect.innerHTML = '<option value="">Choose time slot...</option>';
+            
+            data.available_slots.forEach(slot => {
+                const option = document.createElement('option');
+                option.value = slot;
+                option.textContent = slot;
+                timeSelect.appendChild(option);
+            });
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            timeSelect.disabled = true;
+            timeSelect.innerHTML = '<option value="">Error loading time slots</option>';
+        });
+});
+</script>
+{% endblock %} 

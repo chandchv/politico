@@ -38,6 +38,18 @@
             background: linear-gradient(45deg, #3498db, #2980b9);
             color: white;
         }
+        .border-left-primary {
+            border-left: 4px solid #4e73df;
+        }
+        .border-left-success {
+            border-left: 4px solid #1cc88a;
+        }
+        .border-left-info {
+            border-left: 4px solid #36b9cc;
+        }
+        .border-left-warning {
+            border-left: 4px solid #f6c23e;
+        }
     </style>
 </head>
 <body>
@@ -46,26 +58,111 @@
             <!-- Sidebar -->
             <div class="col-md-2 sidebar">
                 <h3 class="text-white text-center mb-4">Admin Panel</h3>
-                <nav>
-                    <a href="{% url 'custom_admin_dashboard' %}" class="{% if request.resolver_match.url_name == 'custom_admin_dashboard' %}active{% endif %}">
-                        <i class="fas fa-home me-2"></i> Dashboard
-                    </a>
-                    <a href="{% url 'custom_admin_customers' %}" class="{% if request.resolver_match.url_name == 'custom_admin_customers' %}active{% endif %}">
-                        <i class="fas fa-users me-2"></i> Customers
-                    </a>
-                    <a href="{% url 'custom_admin_clothing' %}" class="{% if request.resolver_match.url_name == 'custom_admin_clothing' %}active{% endif %}">
-                        <i class="fas fa-tshirt me-2"></i> Clothing
-                    </a>
-                    <a href="{% url 'custom_admin_measurements' %}" class="{% if request.resolver_match.url_name == 'custom_admin_measurements' %}active{% endif %}">
-                        <i class="fas fa-ruler me-2"></i> Measurements
-                    </a>
-                    <a href="{% url 'admin:index' %}" target="_blank">
-                        <i class="fas fa-cog me-2"></i> Django Admin
-                    </a>
-                    <a href="{% url 'logout' %}">
-                        <i class="fas fa-sign-out-alt me-2"></i> Logout
-                    </a>
-                </nav>
+                <div class="sidebar-heading">
+                    Main Navigation
+                </div>
+
+                <ul class="nav flex-column">
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_dashboard' %}active{% endif %}" 
+                           href="{% url 'custom_admin_dashboard' %}">
+                            <i class="fas fa-tachometer-alt"></i> Dashboard
+                        </a>
+                    </li>
+                    
+                    <!-- Appointments Section -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'appointment' in request.path %}active{% endif %}" 
+                           href="#appointmentSubmenu" data-bs-toggle="collapse">
+                            <i class="fas fa-calendar-alt"></i> Appointments
+                            <i class="fas fa-chevron-down float-end"></i>
+                        </a>
+                        <ul class="collapse {% if 'appointment' in request.path %}show{% endif %} list-unstyled" id="appointmentSubmenu">
+                            <li>
+                                <a class="nav-link ps-4" href="{% url 'appointment_list' %}">
+                                    <i class="fas fa-list"></i> All Appointments
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link ps-4" href="{% url 'book_appointment' %}">
+                                    <i class="fas fa-plus"></i> New Appointment
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Orders & Payments Section -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'order' in request.path or 'payment' in request.path %}active{% endif %}" 
+                           href="#orderSubmenu" data-bs-toggle="collapse">
+                            <i class="fas fa-shopping-cart"></i> Orders & Payments
+                            <i class="fas fa-chevron-down float-end"></i>
+                        </a>
+                        <ul class="collapse {% if 'order' in request.path or 'payment' in request.path %}show{% endif %} list-unstyled" id="orderSubmenu">
+                            <li>
+                                <a class="nav-link ps-4" href="{% url 'order_list' %}">
+                                    <i class="fas fa-list"></i> All Orders
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link ps-4" href="{% url 'create_order' %}">
+                                    <i class="fas fa-plus"></i> New Order
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Customers Section -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_customers' %}active{% endif %}" 
+                           href="{% url 'custom_admin_customers' %}">
+                            <i class="fas fa-users"></i> Customers
+                        </a>
+                    </li>
+
+                    <!-- Clothing Section -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if request.resolver_match.url_name == 'custom_admin_clothing' %}active{% endif %}" 
+                           href="{% url 'custom_admin_clothing' %}">
+                            <i class="fas fa-tshirt"></i> Clothing
+                        </a>
+                    </li>
+
+                    <!-- Subscription Plans Section -->
+                    <li class="nav-item">
+                        <a class="nav-link {% if 'plans' in request.path %}active{% endif %}" 
+                           href="{% url 'subscription_plans' %}">
+                            <i class="fas fa-crown"></i> Subscription Plans
+                        </a>
+                    </li>
+
+                    <!-- Reports Section -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#reportsSubmenu" data-bs-toggle="collapse">
+                            <i class="fas fa-chart-bar"></i> Reports
+                            <i class="fas fa-chevron-down float-end"></i>
+                        </a>
+                        <ul class="collapse list-unstyled" id="reportsSubmenu">
+                            <li>
+                                <a class="nav-link ps-4" href="#">
+                                    <i class="fas fa-chart-line"></i> Sales Report
+                                </a>
+                            </li>
+                            <li>
+                                <a class="nav-link ps-4" href="#">
+                                    <i class="fas fa-chart-pie"></i> Customer Analytics
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Settings -->
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-cog"></i> Settings
+                        </a>
+                    </li>
+                </ul>
             </div>
 
             <!-- Main Content -->

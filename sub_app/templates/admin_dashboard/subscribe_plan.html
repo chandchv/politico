@@ -1,0 +1,74 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Subscribe to {{ plan.name }}{% endblock %}
+
+{% block page_title %}Subscribe to {{ plan.name }}{% endblock %}
+
+{% block content %}
+<div class="card dashboard-card">
+    <div class="card-header">
+        <h5 class="mb-0">Subscribe to {{ plan.get_plan_type_display }}</h5>
+    </div>
+    <div class="card-body">
+        <div class="row mb-4">
+            <div class="col-md-6">
+                <h6>Plan Details</h6>
+                <p><strong>Price:</strong> {{ plan.price }}</p>
+                <p><strong>Duration:</strong> 1 Year</p>
+                <p><strong>Best For:</strong> {{ plan.best_for }}</p>
+            </div>
+            <div class="col-md-6">
+                <h6>Services Included</h6>
+                <ul class="list-unstyled">
+                    {% for service in plan.features.services %}
+                    <li><i class="fas fa-check text-success me-2"></i>{{ service }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+
+        <form method="post">
+            {% csrf_token %}
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label for="customer" class="form-label">Select Customer*</label>
+                        <select class="form-select" id="customer" name="customer" required>
+                            <option value="">Choose customer...</option>
+                            {% for customer in customers %}
+                            <option value="{{ customer.id }}">
+                                {{ customer.get_full_name|default:customer.username }} ({{ customer.email }})
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="alert alert-info">
+                <h6 class="alert-heading">Important Information</h6>
+                <ul class="mb-0">
+                    <li>Subscription will start immediately upon confirmation</li>
+                    <li>Valid for one year from the start date</li>
+                    <li>Includes all items and services listed in the plan</li>
+                    {% if plan.plan_type == 'standard' %}
+                    <li>Annual wardrobe assessment included</li>
+                    {% elif plan.plan_type == 'premium' %}
+                    <li>Biannual wardrobe assessment included</li>
+                    <li>Quarterly stylist consultations included</li>
+                    {% else %}
+                    <li>Quarterly wardrobe assessment included</li>
+                    <li>Monthly stylist consultations included</li>
+                    <li>24/7 Emergency wardrobe support</li>
+                    {% endif %}
+                </ul>
+            </div>
+
+            <div class="text-end mt-4">
+                <a href="{% url 'subscription_plans' %}" class="btn btn-secondary me-2">Cancel</a>
+                <button type="submit" class="btn btn-primary">Confirm Subscription</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %} 

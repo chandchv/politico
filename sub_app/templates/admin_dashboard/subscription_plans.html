@@ -1,0 +1,226 @@
+{% extends "admin_dashboard/base.html" %}
+
+{% block title %}Subscription Plans{% endblock %}
+
+{% block page_title %}Select Subscription Plan{% endblock %}
+
+{% block content %}
+<div class="row">
+    <!-- Standard Plan -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-primary text-white">
+                <h5 class="mb-0">Standard Plan</h5>
+                <p class="mb-0">₹3 Lakhs per Year</p>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">Entry-Level Luxury Wardrobe</h6>
+                <p class="card-text"><strong>Best For:</strong> Young & Rich looking for trendy essentials, HNIs starting their wardrobe upgrade, or politicians/businessmen needing a foundational wardrobe.</p>
+                
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Formal & Business Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>5 custom-fitted dress shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 tailored suits</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 tailored trousers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 premium polo shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 lightweight blazer</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Casual & Seasonal Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>5 trendy T-shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 Cuban collar shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 premium jeans or chinos</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 high-quality bomber jacket</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Ethnic & Occasion Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>1 classic Sherwani/Jodhpuri suit</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 silk kurta set</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Accessories & Footwear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>1 premium belt</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 pair formal shoes</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 pair sneakers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 office bag</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Services</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Personal Stylist (On request)</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Annual wardrobe fit assessment</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'subscribe_plan' 'standard' %}" class="btn btn-primary">Select Standard Plan</a>
+                    <a href="{% url 'manage_plan_items' 'standard' %}" class="btn btn-outline-primary">Manage Items</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Premium Plan -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-success text-white">
+                <h5 class="mb-0">Premium Plan</h5>
+                <p class="mb-0">₹5 Lakhs per Year</p>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">Elevated Wardrobe for Business & Social Life</h6>
+                <p class="card-text"><strong>Best For:</strong> HNIs in software/business, senior businessmen & politicians needing a refined wardrobe.</p>
+                
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Formal & Business Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>10 custom-fitted dress shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>4 tailored suits</li>
+                        <li><i class="fas fa-check text-success me-2"></i>5 tailored trousers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>5 premium polo shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 lightweight blazers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 cashmere sweaters</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Casual & Seasonal Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>7 luxury T-shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 Cuban collar shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>5 premium jeans or chinos</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 tech jacket</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 designer athleisure set</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Ethnic & Occasion Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>2 Sherwanis/Bandhgalas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 silk kurta sets</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 Indo-Western fusion set</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Accessories & Footwear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>2 premium belts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 pairs formal shoes</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 pairs sneakers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 pair premium sandals</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 bags (office + travel)</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 sunglasses</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 luxury watch</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Services</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Dedicated Personal Stylist</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Quarterly consultations</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Biannual wardrobe assessment</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'subscribe_plan' 'premium' %}" class="btn btn-success">Select Premium Plan</a>
+                    <a href="{% url 'manage_plan_items' 'premium' %}" class="btn btn-outline-success">Manage Items</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Luxury Plan -->
+    <div class="col-md-4 mb-4">
+        <div class="card h-100">
+            <div class="card-header bg-dark text-white">
+                <h5 class="mb-0">Luxury Plan</h5>
+                <p class="mb-0">₹7 Lakhs per Year</p>
+            </div>
+            <div class="card-body">
+                <h6 class="card-subtitle mb-3 text-muted">Ultimate Wardrobe Experience</h6>
+                <p class="card-text"><strong>Best For:</strong> HNIs, politicians, and elite businessmen who demand premium custom styling.</p>
+                
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Formal & Business Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>15 custom-fitted dress shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>6 tailored suits</li>
+                        <li><i class="fas fa-check text-success me-2"></i>7 tailored trousers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>7 premium polo shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 high-end blazers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 luxury cashmere sweaters</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Casual & Seasonal Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>10 designer T-shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>5 Cuban collar shirts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>7 premium jeans or chinos</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 tech jackets</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 designer athleisure sets</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Ethnic & Occasion Wear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>3 Sherwanis/Bandhgalas</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 premium silk kurta sets</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 Indo-Western fusion sets</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Accessories & Footwear</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>3 luxury belts</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 pairs formal shoes</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 pairs luxury sneakers</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 pairs premium sandals</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 bags (2 office + 1 travel)</li>
+                        <li><i class="fas fa-check text-success me-2"></i>3 sunglasses</li>
+                        <li><i class="fas fa-check text-success me-2"></i>2 high-end watches</li>
+                        <li><i class="fas fa-check text-success me-2"></i>1 luxury fountain pen</li>
+                    </ul>
+                </div>
+
+                <div class="mb-4">
+                    <h6 class="border-bottom pb-2">Services</h6>
+                    <ul class="list-unstyled">
+                        <li><i class="fas fa-check text-success me-2"></i>Dedicated Personal Stylist</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Monthly wardrobe curation</li>
+                        <li><i class="fas fa-check text-success me-2"></i>Quarterly wardrobe assessment</li>
+                        <li><i class="fas fa-check text-success me-2"></i>24/7 Emergency Wardrobe Support</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="card-footer">
+                <div class="d-grid gap-2">
+                    <a href="{% url 'subscribe_plan' 'luxury' %}" class="btn btn-dark">Select Luxury Plan</a>
+                    <a href="{% url 'manage_plan_items' 'luxury' %}" class="btn btn-outline-dark">Manage Items</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %} 
