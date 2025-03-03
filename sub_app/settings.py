@@ -130,3 +130,13 @@ AUTH_USER_MODEL = 'sub_app.User'
 LOGIN_URL = 'login'
 LOGIN_REDIRECT_URL = 'profile_view'
 LOGOUT_REDIRECT_URL = 'login'
+
+# CSRF Settings
+CSRF_TRUSTED_ORIGINS = ['https://politico-pnj4.onrender.com']
+CSRF_COOKIE_SECURE = True
+CSRF_USE_SESSIONS = True
+
+# Security Settings
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+SESSION_COOKIE_SECURE = True

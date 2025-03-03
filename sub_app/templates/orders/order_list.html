@@ -117,122 +117,142 @@
         </div>
     </div>
 </div>
+
+{% csrf_token %}
 {% endblock %}
 
 {% block extra_js %}
 <script>
+// Add a function to get CSRF token
+function getCSRFToken() {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    return csrfToken;
+}
+
 function viewDetails(orderId) {
-    fetch(`/orders/${orderId}/details/`)
-        .then(response => response.json())
-        .then(data => {
-            const details = document.getElementById('orderDetails');
-            
-            // Build items table
-            const itemsTable = data.items.map(item => `
-                <tr>
-                    <td>${item.name}</td>
-                    <td>${item.quantity}</td>
-                    <td>₹${item.price}</td>
-                    <td>₹${item.total}</td>
-                    <td>${item.notes || '-'}</td>
-                </tr>
-            `).join('');
+    fetch(`/orders/${orderId}/details/`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'  // This is important for CSRF
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const details = document.getElementById('orderDetails');
+        
+        // Build items table
+        const itemsTable = data.items.map(item => `
+            <tr>
+                <td>${item.name}</td>
+                <td>${item.quantity}</td>
+                <td>₹${item.price}</td>
+                <td>₹${item.total}</td>
+                <td>${item.notes || '-'}</td>
+            </tr>
+        `).join('');
 
-            // Build payments table
-            const paymentsTable = data.payments.map(payment => `
-                <tr>
-                    <td>${payment.type}</td>
-                    <td>${payment.method}</td>
-                    <td>₹${payment.amount}</td>
-                    <td>${payment.date}</td>
-                    <td>${payment.transaction_id}</td>
-                    <td>${payment.notes || '-'}</td>
-                </tr>
-            `).join('');
+        // Build payments table
+        const paymentsTable = data.payments.map(payment => `
+            <tr>
+                <td>${payment.type}</td>
+                <td>${payment.method}</td>
+                <td>₹${payment.amount}</td>
+                <td>${payment.date}</td>
+                <td>${payment.transaction_id}</td>
+                <td>${payment.notes || '-'}</td>
+            </tr>
+        `).join('');
 
-            details.innerHTML = `
-                <div class="row mb-4">
-                    <div class="col-md-6">
-                        <h6>Order Information</h6>
-                        <dl class="row">
-                            <dt class="col-sm-4">Order ID</dt>
-                            <dd class="col-sm-8">#${data.order_id}</dd>
-                            
-                            <dt class="col-sm-4">Customer</dt>
-                            <dd class="col-sm-8">${data.customer_name}</dd>
-                            
-                            <dt class="col-sm-4">Order Date</dt>
-                            <dd class="col-sm-8">${data.order_date}</dd>
-                            
-                            <dt class="col-sm-4">Status</dt>
-                            <dd class="col-sm-8">${data.status}</dd>
-                        </dl>
-                    </div>
-                    <div class="col-md-6">
-                        <h6>Payment Summary</h6>
-                        <dl class="row">
-                            <dt class="col-sm-4">Total Amount</dt>
-                            <dd class="col-sm-8">₹${data.total_amount}</dd>
-                            
-                            <dt class="col-sm-4">Amount Paid</dt>
-                            <dd class="col-sm-8">₹${data.amount_paid}</dd>
-                            
-                            <dt class="col-sm-4">Balance Due</dt>
-                            <dd class="col-sm-8">₹${data.balance_due}</dd>
-                        </dl>
-                    </div>
+        details.innerHTML = `
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h6>Order Information</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Order ID</dt>
+                        <dd class="col-sm-8">#${data.order_id}</dd>
+                        
+                        <dt class="col-sm-4">Customer</dt>
+                        <dd class="col-sm-8">${data.customer_name}</dd>
+                        
+                        <dt class="col-sm-4">Order Date</dt>
+                        <dd class="col-sm-8">${data.order_date}</dd>
+                        
+                        <dt class="col-sm-4">Status</dt>
+                        <dd class="col-sm-8">${data.status}</dd>
+                    </dl>
                 </div>
-
-                <h6>Order Items</h6>
-                <div class="table-responsive mb-4">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th>Quantity</th>
-                                <th>Price</th>
-                                <th>Total</th>
-                                <th>Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${itemsTable}
-                        </tbody>
-                    </table>
+                <div class="col-md-6">
+                    <h6>Payment Summary</h6>
+                    <dl class="row">
+                        <dt class="col-sm-4">Total Amount</dt>
+                        <dd class="col-sm-8">₹${data.total_amount}</dd>
+                        
+                        <dt class="col-sm-4">Amount Paid</dt>
+                        <dd class="col-sm-8">₹${data.amount_paid}</dd>
+                        
+                        <dt class="col-sm-4">Balance Due</dt>
+                        <dd class="col-sm-8">₹${data.balance_due}</dd>
+                    </dl>
                 </div>
+            </div>
 
-                <h6>Payment History</h6>
-                <div class="table-responsive">
-                    <table class="table table-sm">
-                        <thead>
-                            <tr>
-                                <th>Type</th>
-                                <th>Method</th>
-                                <th>Amount</th>
-                                <th>Date</th>
-                                <th>Transaction ID</th>
-                                <th>Notes</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            ${paymentsTable}
-                        </tbody>
-                    </table>
-                </div>
+            <h6>Order Items</h6>
+            <div class="table-responsive mb-4">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Item</th>
+                            <th>Quantity</th>
+                            <th>Price</th>
+                            <th>Total</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${itemsTable}
+                    </tbody>
+                </table>
+            </div>
 
-                ${data.notes ? `
-                <div class="mt-4">
-                    <h6>Notes</h6>
-                    <p class="mb-0">${data.notes}</p>
-                </div>
-                ` : ''}
-            `;
-            new bootstrap.Modal(document.getElementById('orderModal')).show();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error loading order details');
-        });
+            <h6>Payment History</h6>
+            <div class="table-responsive">
+                <table class="table table-sm">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Method</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                            <th>Transaction ID</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        ${paymentsTable}
+                    </tbody>
+                </table>
+            </div>
+
+            ${data.notes ? `
+            <div class="mt-4">
+                <h6>Notes</h6>
+                <p class="mb-0">${data.notes}</p>
+            </div>
+            ` : ''}
+        `;
+        new bootstrap.Modal(document.getElementById('orderModal')).show();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error loading order details. Please try again.');
+    });
 }
 </script>
 {% endblock %} 

@@ -6,6 +6,7 @@
 {% block page_title %}Manage Appointments{% endblock %}
 
 {% block content %}
+{% csrf_token %}
 <div class="card">
     <div class="card-header d-flex justify-content-between align-items-center">
         <h5 class="mb-0">Appointments</h5>
@@ -136,6 +137,11 @@
 
 {% block extra_js %}
 <script>
+function getCSRFToken() {
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+    return csrfToken;
+}
+
 function updateStatus(appointmentId, status) {
     if (!confirm('Are you sure you want to update this appointment status?')) {
         return;
@@ -145,59 +151,77 @@ function updateStatus(appointmentId, status) {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
+            'X-CSRFToken': getCSRFToken()
         },
+        credentials: 'same-origin',
         body: JSON.stringify({ status: status })
     })
-    .then(response => response.json())
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
     .then(data => {
         if (data.success) {
             location.reload();
         } else {
-            alert('Error updating appointment status');
+            throw new Error(data.error || 'Error updating appointment status');
         }
     })
     .catch(error => {
         console.error('Error:', error);
-        alert('Error updating appointment status');
+        alert('Error updating appointment status. Please try again.');
     });
 }
 
 function viewDetails(appointmentId) {
-    fetch(`/appointments/${appointmentId}/details/`)
-        .then(response => response.json())
-        .then(data => {
-            const details = document.getElementById('appointmentDetails');
-            details.innerHTML = `
-                <dl class="row">
-                    <dt class="col-sm-4">Customer</dt>
-                    <dd class="col-sm-8">${data.customer_name}</dd>
-                    
-                    <dt class="col-sm-4">Stage</dt>
-                    <dd class="col-sm-8">${data.stage}</dd>
-                    
-                    <dt class="col-sm-4">Date & Time</dt>
-                    <dd class="col-sm-8">${data.date_time}</dd>
-                    
-                    <dt class="col-sm-4">Status</dt>
-                    <dd class="col-sm-8">${data.status}</dd>
-                    
-                    <dt class="col-sm-4">Notes</dt>
-                    <dd class="col-sm-8">${data.notes || 'No notes'}</dd>
-                    
-                    <dt class="col-sm-4">Created By</dt>
-                    <dd class="col-sm-8">${data.created_by}</dd>
-                    
-                    <dt class="col-sm-4">Created At</dt>
-                    <dd class="col-sm-8">${data.created_at}</dd>
-                </dl>
-            `;
-            new bootstrap.Modal(document.getElementById('appointmentModal')).show();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            alert('Error loading appointment details');
-        });
+    fetch(`/appointments/${appointmentId}/details/`, {
+        method: 'GET',
+        headers: {
+            'X-CSRFToken': getCSRFToken(),
+            'Content-Type': 'application/json',
+        },
+        credentials: 'same-origin'
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        const details = document.getElementById('appointmentDetails');
+        details.innerHTML = `
+            <dl class="row">
+                <dt class="col-sm-4">Customer</dt>
+                <dd class="col-sm-8">${data.customer_name}</dd>
+                
+                <dt class="col-sm-4">Stage</dt>
+                <dd class="col-sm-8">${data.stage}</dd>
+                
+                <dt class="col-sm-4">Date & Time</dt>
+                <dd class="col-sm-8">${data.date_time}</dd>
+                
+                <dt class="col-sm-4">Status</dt>
+                <dd class="col-sm-8">${data.status}</dd>
+                
+                <dt class="col-sm-4">Notes</dt>
+                <dd class="col-sm-8">${data.notes || 'No notes'}</dd>
+                
+                <dt class="col-sm-4">Created By</dt>
+                <dd class="col-sm-8">${data.created_by}</dd>
+                
+                <dt class="col-sm-4">Created At</dt>
+                <dd class="col-sm-8">${data.created_at}</dd>
+            </dl>
+        `;
+        new bootstrap.Modal(document.getElementById('appointmentModal')).show();
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        alert('Error loading appointment details. Please try again.');
+    });
 }
 </script>
 {% endblock %} 
